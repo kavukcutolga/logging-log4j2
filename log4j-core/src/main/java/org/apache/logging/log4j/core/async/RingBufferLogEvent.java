@@ -28,6 +28,7 @@ import org.apache.logging.log4j.core.config.Property;
 import org.apache.logging.log4j.core.impl.Log4jLogEvent;
 import org.apache.logging.log4j.core.impl.ThrowableProxy;
 import org.apache.logging.log4j.core.lookup.StrSubstitutor;
+import org.apache.logging.log4j.message.MapMessage;
 import org.apache.logging.log4j.message.Message;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.apache.logging.log4j.util.Strings;
@@ -35,10 +36,11 @@ import org.apache.logging.log4j.util.Strings;
 import com.lmax.disruptor.EventFactory;
 
 /**
- * When the Disruptor is started, the RingBuffer is populated with event objects. These objects are then re-used during
- * the life of the RingBuffer.
+ * When the Disruptor is started, the RingBuffer is populated with event objects. These objects are
+ * then re-used during the life of the RingBuffer.
  */
 public class RingBufferLogEvent implements LogEvent {
+
     private static final long serialVersionUID = 8462119088943934758L;
 
     /**
@@ -52,7 +54,9 @@ public class RingBufferLogEvent implements LogEvent {
         }
     }
 
-    /** The {@code EventFactory} for {@code RingBufferLogEvent}s. */
+    /**
+     * The {@code EventFactory} for {@code RingBufferLogEvent}s.
+     */
     public static final Factory FACTORY = new Factory();
 
     private transient AsyncLogger asyncLogger;
@@ -71,10 +75,11 @@ public class RingBufferLogEvent implements LogEvent {
     private boolean endOfBatch;
     private boolean includeLocation;
 
-    public void setValues(final AsyncLogger asyncLogger, final String loggerName, final Marker marker,
-            final String fqcn, final Level level, final Message data, final Throwable throwable,
-            final Map<String, String> map, final ContextStack contextStack, final String threadName,
-            final StackTraceElement location, final long currentTimeMillis) {
+    public void setValues(final AsyncLogger asyncLogger, final String loggerName,
+        final Marker marker,
+        final String fqcn, final Level level, final Message data, final Throwable throwable,
+        final Map<String, String> map, final ContextStack contextStack, final String threadName,
+        final StackTraceElement location, final long currentTimeMillis) {
         this.asyncLogger = asyncLogger;
         this.loggerName = loggerName;
         this.marker = marker;
@@ -92,7 +97,7 @@ public class RingBufferLogEvent implements LogEvent {
 
     /**
      * Event processor that reads the event from the ringbuffer can call this method.
-     * 
+     *
      * @param endOfBatch flag to indicate if this is the last event in a batch from the RingBuffer
      */
     public void execute(final boolean endOfBatch) {
@@ -102,7 +107,7 @@ public class RingBufferLogEvent implements LogEvent {
 
     /**
      * Returns {@code true} if this event is the end of a batch, {@code false} otherwise.
-     * 
+     *
      * @return {@code true} if this event is the end of a batch, {@code false} otherwise
      */
     @Override
@@ -179,6 +184,16 @@ public class RingBufferLogEvent implements LogEvent {
     }
 
     @Override
+    public LogEvent toImmutable() {
+        RingBufferLogEvent ringBufferLogEvent = new RingBufferLogEvent();
+        ringBufferLogEvent.setValues(asyncLogger, loggerName, marker,
+            fqcn, level, new MapMessage(((MapMessage) message).getData()), thrown,
+            new HashMap<String, String>(contextMap), contextStack, threadName,
+            location, currentTimeMillis);
+        return ringBufferLogEvent;
+    }
+
+    @Override
     public Map<String, String> getContextMap() {
         return contextMap;
     }
@@ -204,27 +219,28 @@ public class RingBufferLogEvent implements LogEvent {
     }
 
     /**
-     * Merges the contents of the specified map into the contextMap, after replacing any variables in the property
-     * values with the StrSubstitutor-supplied actual values.
-     * 
+     * Merges the contents of the specified map into the contextMap, after replacing any variables
+     * in the property values with the StrSubstitutor-supplied actual values.
+     *
      * @param properties configured properties
      * @param strSubstitutor used to lookup values of variables in properties
      */
     public void mergePropertiesIntoContextMap(final Map<Property, Boolean> properties,
-            final StrSubstitutor strSubstitutor) {
+        final StrSubstitutor strSubstitutor) {
         if (properties == null) {
             return; // nothing to do
         }
 
         final Map<String, String> map = contextMap == null ? new HashMap<String, String>()
-                : new HashMap<String, String>(contextMap);
+            : new HashMap<String, String>(contextMap);
 
         for (final Map.Entry<Property, Boolean> entry : properties.entrySet()) {
             final Property prop = entry.getKey();
             if (map.containsKey(prop.getName())) {
                 continue; // contextMap overrides config properties
             }
-            final String value = entry.getValue().booleanValue() ? strSubstitutor.replace(prop.getValue()) : prop
+            final String value =
+                entry.getValue().booleanValue() ? strSubstitutor.replace(prop.getValue()) : prop
                     .getValue();
             map.put(prop.getName(), value);
         }
@@ -236,17 +252,17 @@ public class RingBufferLogEvent implements LogEvent {
      */
     public void clear() {
         setValues(null, // asyncLogger
-                null, // loggerName
-                null, // marker
-                null, // fqcn
-                null, // level
-                null, // data
-                null, // t
-                null, // map
-                null, // contextStack
-                null, // threadName
-                null, // location
-                0 // currentTimeMillis
+            null, // loggerName
+            null, // marker
+            null, // fqcn
+            null, // level
+            null, // data
+            null, // t
+            null, // map
+            null, // contextStack
+            null, // threadName
+            null, // location
+            0 // currentTimeMillis
         );
     }
 
@@ -257,13 +273,14 @@ public class RingBufferLogEvent implements LogEvent {
 
     /**
      * Creates and returns a new immutable copy of this {@code RingBufferLogEvent}.
-     * 
+     *
      * @return a new immutable copy of the data in this {@code RingBufferLogEvent}
      */
     public LogEvent createMemento() {
         // Ideally, would like to use the LogEventFactory here but signature does not match:
         // results in factory re-creating the timestamp, context map and context stack, which we don't want.
-        return new Log4jLogEvent(loggerName, marker, fqcn, level, message, thrown, contextMap, contextStack,
-                threadName, location, currentTimeMillis);
+        return new Log4jLogEvent(loggerName, marker, fqcn, level, message, thrown, contextMap,
+            contextStack,
+            threadName, location, currentTimeMillis);
     }
 }

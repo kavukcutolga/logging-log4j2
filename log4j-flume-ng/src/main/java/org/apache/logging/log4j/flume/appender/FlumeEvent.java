@@ -285,6 +285,11 @@ public class FlumeEvent extends SimpleEvent implements LogEvent {
         return event.getThrownProxy();
     }
 
+    @Override
+    public LogEvent toImmutable() {
+        return this;
+    }
+
     /**
      * Returns a copy of the context Map.
      * @return a copy of the context Map.

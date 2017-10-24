@@ -58,6 +58,11 @@ public class TestBasicEntity extends BasicLogEventEntity {
     }
 
     @Override
+    public LogEvent toImmutable() {
+        return this;
+    }
+
+    @Override
     @Convert(converter = ContextMapJsonAttributeConverter.class)
     @Column(name = "contextMapJson")
     public Map<String, String> getContextMap() {

@@ -137,6 +137,11 @@ public class TestBaseEntity extends AbstractLogEventWrapperEntity {
     }
 
     @Override
+    public LogEvent toImmutable() {
+        return this;
+    }
+
+    @Override
     @Transient
     public Map<String, String> getContextMap() {
         return this.getWrappedEvent().getContextMap();

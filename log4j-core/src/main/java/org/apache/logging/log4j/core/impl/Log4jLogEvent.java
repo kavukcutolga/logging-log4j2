@@ -344,6 +344,11 @@ public class Log4jLogEvent implements LogEvent {
         return loggerFqcn;
     }
 
+    @Override
+    public LogEvent toImmutable() {
+        return this;
+    }
+
     /**
      * Returns the immutable copy of the ThreadContext Map.
      * @return The context Map.

@@ -43,6 +43,11 @@ public abstract class AbstractLogEvent implements LogEvent {
     }
 
     @Override
+    public LogEvent toImmutable(){
+        return null;
+    }
+
+    @Override
     public ContextStack getContextStack() {
         return ThreadContext.EMPTY_STACK;
     }

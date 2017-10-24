@@ -42,6 +42,13 @@ import org.apache.logging.log4j.message.Message;
 public interface LogEvent extends Serializable {
 
     /**
+     * Returns an immutable version of this log event, which MAY BE a copy of this event.
+     *
+     * @return an immutable version of this log event
+     */
+    LogEvent toImmutable();
+
+    /**
      * Gets the context map (also know as Mapped Diagnostic Context or MDC).
      *
      * @return The context map, never {@code null}.
