@@ -188,7 +188,7 @@ public class RingBufferLogEvent implements LogEvent {
         RingBufferLogEvent ringBufferLogEvent = new RingBufferLogEvent();
         ringBufferLogEvent.setValues(asyncLogger, loggerName, marker,
             fqcn, level, new MapMessage(((MapMessage) message).getData()), thrown,
-            new HashMap<String, String>(contextMap), contextStack, threadName,
+            contextMap, contextStack, threadName,
             location, currentTimeMillis);
         return ringBufferLogEvent;
     }

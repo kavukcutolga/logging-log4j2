@@ -72,7 +72,7 @@ public class LoggerConfig extends AbstractFilterable {
     private LogEventFactory logEventFactory;
     private Level level;
     private boolean additive = true;
-    private boolean includeLocation = true;
+    private boolean includeLocation = false;
     private LoggerConfig parent;
     private final AtomicInteger counter = new AtomicInteger();
     private final AtomicBoolean shutdown = new AtomicBoolean(false);
@@ -477,9 +477,15 @@ public class LoggerConfig extends AbstractFilterable {
     // for synchronous loggers, includeLocation default is TRUE.
     protected static boolean includeLocation(final String includeLocationConfigValue) {
         if (includeLocationConfigValue == null) {
-            final boolean sync = !AsyncLoggerContextSelector.class.getName()
-                    .equals(PropertiesUtil.getProperties().getStringProperty(Constants.LOG4J_CONTEXT_SELECTOR));
-            return sync;
+            String contextSelectorName = PropertiesUtil.getProperties()
+                .getStringProperty(Constants.LOG4J_CONTEXT_SELECTOR);
+            if(contextSelectorName == null){
+                return true;
+            }else {
+                final boolean sync = !contextSelectorName.contains(AsyncLoggerContextSelector.class.getSimpleName());
+                return sync;
+            }
+
         }
         return Boolean.parseBoolean(includeLocationConfigValue);
     }

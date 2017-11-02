@@ -199,7 +199,8 @@ public class AsyncLogger extends Logger {
         }
     }
 
-    /**
+    /**DELETE FROM evam_analytics_micro_cl_cnter WHERE TO_NUMBER(INDEX_CN) > SELECT MAX(TO_NUMBER(ATTR_INDEX)) FROM EVAM_ANALYTICS_PARAM_INDEX;
+
      * Constructs an {@code AsyncLogger} with the specified context, name and
      * message factory.
      *
