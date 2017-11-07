@@ -36,7 +36,7 @@
   <dependencies>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-core</artifactId>
+      <artifactId>log4j-core</artifactId><version>2.3.1</version>
     </dependency>
     <dependency>
       <groupId>org.mongodb</groupId>
@@ -59,7 +59,7 @@
     </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
-      <artifactId>log4j-core</artifactId>
+      <artifactId>log4j-core</artifactId><version>2.3.1</version>
       <type>test-jar</type>
     </dependency>
   </dependencies>

@@ -39,6 +39,7 @@
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-api</artifactId>
+      <version>2.3</version>
     </dependency>
     <!-- Used for OSGi bundle support -->
     <dependency>
@@ -117,6 +118,7 @@
       <artifactId>log4j-api</artifactId>
       <type>test-jar</type>
       <scope>test</scope>
+      <version>2.3</version>
     </dependency>
     <!-- Zeroconf advertiser tests -->
     <dependency>
